@@ -1,4 +1,4 @@
-# Force redeploy
+# FORCE FULL REDEPLOY
 from flask import Flask, render_template, request, jsonify
 from openai import OpenAI
 from dotenv import load_dotenv
@@ -75,7 +75,7 @@ def daily_horoscope_ai(sign):
 You are a professional astrologer.
 Give today's horoscope for {sign}.
 Do NOT mention AI or technology.
-Keep it positive, realistic, and calming.
+Keep it positive and realistic.
 """
 
     response = client.chat.completions.create(
@@ -108,7 +108,7 @@ Explain:
 - Emotional compatibility
 - Love bond
 - Relationship stability
-- Future potential
+- Long-term potential
 
 Do NOT mention AI or technology.
 Keep tone warm and realistic.
@@ -118,6 +118,45 @@ Keep tone warm and realistic.
         model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": "You are an expert astrologer."},
+            {"role": "user", "content": prompt}
+        ],
+        temperature=0.7
+    )
+
+    return response.choices[0].message.content
+
+# -------------------------
+# Kundli / Birth Chart AI
+# -------------------------
+def kundli_ai(dob, time, place):
+    zodiac = get_zodiac_sign(dob)
+
+    prompt = f"""
+You are a professional Vedic astrologer.
+
+Create a Kundli-style birth chart analysis.
+
+Birth Details:
+Date: {dob}
+Time: {time}
+Place: {place}
+Zodiac Sign: {zodiac}
+
+Explain clearly:
+- Personality traits
+- Career direction
+- Marriage & relationships
+- Health tendencies
+- Strengths and challenges
+
+Do NOT mention AI or technology.
+Give calm, realistic guidance.
+"""
+
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "You are an expert Vedic astrologer."},
             {"role": "user", "content": prompt}
         ],
         temperature=0.7
@@ -167,6 +206,19 @@ def love():
     reply = love_compatibility_ai(
         data["boy_dob"],
         data["girl_dob"]
+    )
+    return jsonify({"reply": reply})
+
+@app.route("/kundli", methods=["GET", "POST"])
+def kundli():
+    if request.method == "GET":
+        return render_template("kundli.html")
+
+    data = request.json
+    reply = kundli_ai(
+        data["dob"],
+        data["time"],
+        data["place"]
     )
     return jsonify({"reply": reply})
 
