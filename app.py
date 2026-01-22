@@ -63,6 +63,10 @@ Give a calm, realistic, astrology-based answer.
 def home():
     return render_template("home.html")
 
+@app.route("/daily-horoscope")
+def daily_page():
+    return render_template("daily.html")
+
 @app.route("/chat", methods=["GET", "POST"])
 def chat():
     if request.method == "GET":
@@ -79,5 +83,6 @@ def chat():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
+
 
 
