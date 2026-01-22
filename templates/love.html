@@ -1,77 +1,46 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Love Compatibility | AstroRashi</title>
-
-    <style>
-        body {
-            background: #0c1022;
-            color: white;
-            font-family: Arial;
-        }
-
-        .box {
-            width: 420px;
-            margin: auto;
-            margin-top: 40px;
-            padding: 20px;
-            background: #1b1f3b;
-            border-radius: 10px;
-            text-align: center;
-        }
-
-        input, button {
-            width: 100%;
-            margin-top: 10px;
-            padding: 10px;
-            border-radius: 5px;
-            border: none;
-        }
-
-        button {
-            background: pink;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .reply {
-            margin-top: 15px;
-            background: #292d5c;
-            padding: 10px;
-            border-radius: 5px;
-        }
-    </style>
+<title>Love Compatibility</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body{margin:0;font-family:Arial;background:#050714;color:white;overflow:hidden;}
+.stars{position:fixed;width:100%;height:100%;z-index:0;}
+.star{position:absolute;width:2px;height:2px;background:white;border-radius:50%;
+animation:move linear infinite;}
+@keyframes move{to{transform:translateY(-120vh);opacity:0;}}
+.box{position:relative;z-index:2;width:420px;margin:80px auto;padding:20px;
+background:#1b1f3b;border-radius:10px;animation:fade 1s;}
+@keyframes fade{from{opacity:0;transform:translateY(20px);}to{opacity:1;}}
+.back-home{margin:15px;display:inline-block;padding:8px 14px;
+background:rgba(255,215,0,0.15);color:gold;text-decoration:none;}
+</style>
 </head>
 
 <body>
+<div class="stars" id="stars"></div>
+<a href="/" class="back-home">⬅ Back to Home</a>
 
 <div class="box">
-    <h1>❤️ Love Compatibility</h1>
-
-    <input type="date" id="boy_dob" placeholder="Boy Date of Birth">
-    <input type="date" id="girl_dob" placeholder="Girl Date of Birth">
-
-    <button onclick="checkLove()">Check Compatibility</button>
-
-    <div class="reply" id="reply"></div>
+<h2>❤️ Love Compatibility</h2>
+<input id="boy" placeholder="Boy Zodiac">
+<input id="girl" placeholder="Girl Zodiac">
+<button onclick="check()">Check</button>
+<div id="reply"></div>
 </div>
 
 <script>
-function checkLove() {
-    fetch("/love", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({
-            boy_dob: document.getElementById("boy_dob").value,
-            girl_dob: document.getElementById("girl_dob").value
-        })
-    })
-    .then(res => res.json())
-    .then(data => {
-        document.getElementById("reply").innerText = data.reply;
-    });
-}
+for(let i=0;i<100;i++){
+let s=document.createElement("div");
+s.className="star";
+s.style.left=Math.random()*100+"vw";
+s.style.top=Math.random()*100+"vh";
+s.style.animationDuration=10+Math.random()*20+"s";
+stars.appendChild(s);}
+function check(){
+fetch("/love",{method:"POST",headers:{"Content-Type":"application/json"},
+body:JSON.stringify({boy:boy.value,girl:girl.value})})
+.then(r=>r.json()).then(d=>reply.innerText=d.reply);}
 </script>
-
 </body>
 </html>
