@@ -60,10 +60,13 @@ Give a calm, realistic, astrology-based answer.
 
 @app.route("/")
 def home():
-    return render_template("index.html")
+    return render_template("home.html")
 
-@app.route("/chat", methods=["POST"])
+@app.route("/chat", methods=["GET", "POST"])
 def chat():
+    if request.method == "GET":
+        return render_template("index.html")
+
     data = request.json
     reply = astrology_ai(
         data["dob"],
@@ -75,3 +78,4 @@ def chat():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
+
