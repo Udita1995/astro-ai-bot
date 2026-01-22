@@ -1,15 +1,21 @@
 # Force redeploy
 from flask import Flask, render_template, request, jsonify
 from openai import OpenAI
-import os
 from dotenv import load_dotenv
 from datetime import datetime
+import os
 
+# Load environment variables
 load_dotenv()
 
 app = Flask(__name__)
+
+# OpenAI client
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
+# -------------------------
+# Zodiac Helper
+# -------------------------
 def get_zodiac_sign(dob):
     date = datetime.strptime(dob, "%Y-%m-%d")
     day = date.day
@@ -28,24 +34,26 @@ def get_zodiac_sign(dob):
             return sign
     return "Capricorn"
 
+# -------------------------
+# Ask Astrology AI
+# -------------------------
 def astrology_ai(dob, time, place, question):
     zodiac = get_zodiac_sign(dob)
 
     prompt = f"""
 You are a professional Vedic astrologer.
-Use zodiac psychology and traditional astrology symbolism.
-Do NOT mention AI, software, or technology.
+Do NOT mention AI or technology.
 
 Birth Details:
-Date of Birth: {dob}
+Date: {dob}
 Time: {time}
 Place: {place}
 Zodiac Sign: {zodiac}
 
-User Question:
+Question:
 {question}
 
-Give a calm, realistic, astrology-based answer.
+Give a calm, realistic astrology-based answer.
 """
 
     response = client.chat.completions.create(
@@ -59,13 +67,34 @@ Give a calm, realistic, astrology-based answer.
 
     return response.choices[0].message.content
 
+# -------------------------
+# Daily Horoscope AI
+# -------------------------
+def daily_horoscope_ai(sign):
+    prompt = f"""
+You are a professional astrologer.
+Give today's horoscope for {sign}.
+Do NOT mention AI or technology.
+Keep it positive, realistic, and calming.
+"""
+
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "You are an expert astrologer."},
+            {"role": "user", "content": prompt}
+        ],
+        temperature=0.7
+    )
+
+    return response.choices[0].message.content
+
+# -------------------------
+# Routes
+# -------------------------
 @app.route("/")
 def home():
     return render_template("home.html")
-
-@app.route("/daily-horoscope")
-def daily_page():
-    return render_template("daily.html")
 
 @app.route("/chat", methods=["GET", "POST"])
 def chat():
@@ -81,8 +110,18 @@ def chat():
     )
     return jsonify({"reply": reply})
 
+@app.route("/daily-horoscope")
+def daily_page():
+    return render_template("daily.html")
+
+@app.route("/daily", methods=["POST"])
+def daily():
+    data = request.json
+    reply = daily_horoscope_ai(data["sign"])
+    return jsonify({"reply": reply})
+
+# -------------------------
+# Run App
+# -------------------------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
-
-
-
