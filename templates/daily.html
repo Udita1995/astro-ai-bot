@@ -1,84 +1,50 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Daily Horoscope | AstroRashi</title>
-    <style>
-        body {
-            background: #0c1022;
-            color: white;
-            font-family: Arial;
-        }
-        .box {
-            width: 420px;
-            margin: auto;
-            margin-top: 40px;
-            padding: 20px;
-            background: #1b1f3b;
-            border-radius: 10px;
-            text-align: center;
-        }
-        select, button {
-            width: 100%;
-            margin-top: 10px;
-            padding: 10px;
-            border-radius: 5px;
-            border: none;
-        }
-        button {
-            background: gold;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .reply {
-            margin-top: 15px;
-            background: #292d5c;
-            padding: 10px;
-            border-radius: 5px;
-        }
-    </style>
+<title>Daily Horoscope</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body{margin:0;font-family:Arial;background:#050714;color:white;overflow:hidden;}
+.stars{position:fixed;width:100%;height:100%;z-index:0;}
+.star{position:absolute;width:2px;height:2px;background:white;border-radius:50%;
+animation:move linear infinite;}
+@keyframes move{to{transform:translateY(-120vh);opacity:0;}}
+.box{position:relative;z-index:2;width:420px;margin:80px auto;padding:20px;
+background:#1b1f3b;border-radius:10px;animation:fade 1s;}
+@keyframes fade{from{opacity:0;transform:translateY(20px);}to{opacity:1;}}
+.back-home{margin:15px;display:inline-block;padding:8px 14px;
+background:rgba(255,215,0,0.15);color:gold;text-decoration:none;}
+</style>
 </head>
+
 <body>
+<div class="stars" id="stars"></div>
+<a href="/" class="back-home">⬅ Back to Home</a>
 
 <div class="box">
-    <h1>🌞 Daily Horoscope</h1>
-
-    <select id="sign">
-        <option value="">Select Zodiac Sign</option>
-        <option>Aries</option>
-        <option>Taurus</option>
-        <option>Gemini</option>
-        <option>Cancer</option>
-        <option>Leo</option>
-        <option>Virgo</option>
-        <option>Libra</option>
-        <option>Scorpio</option>
-        <option>Sagittarius</option>
-        <option>Capricorn</option>
-        <option>Aquarius</option>
-        <option>Pisces</option>
-    </select>
-
-    <button onclick="getHoroscope()">Get Today's Horoscope</button>
-
-    <div class="reply" id="reply"></div>
+<h2>🌞 Daily Horoscope</h2>
+<select id="sign">
+<option>Aries</option><option>Taurus</option><option>Gemini</option>
+<option>Cancer</option><option>Leo</option><option>Virgo</option>
+<option>Libra</option><option>Scorpio</option><option>Sagittarius</option>
+<option>Capricorn</option><option>Aquarius</option><option>Pisces</option>
+</select>
+<button onclick="get()">Get Horoscope</button>
+<div id="reply"></div>
 </div>
 
 <script>
-function getHoroscope() {
-    fetch("/daily", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({
-            sign: document.getElementById("sign").value
-        })
-    })
-    .then(res => res.json())
-    .then(data => {
-        document.getElementById("reply").innerText = data.reply;
-    });
-}
+for(let i=0;i<100;i++){
+let s=document.createElement("div");
+s.className="star";
+s.style.left=Math.random()*100+"vw";
+s.style.top=Math.random()*100+"vh";
+s.style.animationDuration=10+Math.random()*20+"s";
+stars.appendChild(s);}
+function get(){
+fetch("/daily",{method:"POST",headers:{"Content-Type":"application/json"},
+body:JSON.stringify({sign:sign.value})})
+.then(r=>r.json()).then(d=>reply.innerText=d.reply);}
 </script>
-
 </body>
 </html>
-
