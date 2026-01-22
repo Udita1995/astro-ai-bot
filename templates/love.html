@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Love Compatibility | AstroRashi</title>
+
+    <style>
+        body {
+            background: #0c1022;
+            color: white;
+            font-family: Arial;
+        }
+
+        .box {
+            width: 420px;
+            margin: auto;
+            margin-top: 40px;
+            padding: 20px;
+            background: #1b1f3b;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        input, button {
+            width: 100%;
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+        }
+
+        button {
+            background: pink;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .reply {
+            margin-top: 15px;
+            background: #292d5c;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="box">
+    <h1>❤️ Love Compatibility</h1>
+
+    <input type="date" id="boy_dob" placeholder="Boy Date of Birth">
+    <input type="date" id="girl_dob" placeholder="Girl Date of Birth">
+
+    <button onclick="checkLove()">Check Compatibility</button>
+
+    <div class="reply" id="reply"></div>
+</div>
+
+<script>
+function checkLove() {
+    fetch("/love", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            boy_dob: document.getElementById("boy_dob").value,
+            girl_dob: document.getElementById("girl_dob").value
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById("reply").innerText = data.reply;
+    });
+}
+</script>
+
+</body>
+</html>
