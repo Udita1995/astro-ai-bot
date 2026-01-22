@@ -165,6 +165,35 @@ Give calm, realistic guidance.
     return response.choices[0].message.content
 
 # -------------------------
+# Lucky Color & Number AI
+# -------------------------
+def lucky_ai(sign):
+    prompt = f"""
+You are a professional astrologer.
+
+Give today's lucky color and lucky number for {sign}.
+
+Include:
+- Lucky color
+- Lucky number
+- Short astrology-based reason
+
+Do NOT mention AI or technology.
+Keep it positive and simple.
+"""
+
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "You are an expert astrologer."},
+            {"role": "user", "content": prompt}
+        ],
+        temperature=0.6
+    )
+
+    return response.choices[0].message.content
+
+# -------------------------
 # Routes
 # -------------------------
 
@@ -220,6 +249,15 @@ def kundli():
         data["time"],
         data["place"]
     )
+    return jsonify({"reply": reply})
+
+@app.route("/lucky", methods=["GET", "POST"])
+def lucky():
+    if request.method == "GET":
+        return render_template("lucky.html")
+
+    data = request.json
+    reply = lucky_ai(data["sign"])
     return jsonify({"reply": reply})
 
 # -------------------------
