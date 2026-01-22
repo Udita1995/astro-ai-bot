@@ -90,8 +90,45 @@ Keep it positive, realistic, and calming.
     return response.choices[0].message.content
 
 # -------------------------
+# Love Compatibility AI
+# -------------------------
+def love_compatibility_ai(boy_dob, girl_dob):
+    boy_sign = get_zodiac_sign(boy_dob)
+    girl_sign = get_zodiac_sign(girl_dob)
+
+    prompt = f"""
+You are a professional astrologer.
+
+Analyze love compatibility using zodiac psychology.
+
+Boy Zodiac Sign: {boy_sign}
+Girl Zodiac Sign: {girl_sign}
+
+Explain:
+- Emotional compatibility
+- Love bond
+- Relationship stability
+- Future potential
+
+Do NOT mention AI or technology.
+Keep tone warm and realistic.
+"""
+
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "You are an expert astrologer."},
+            {"role": "user", "content": prompt}
+        ],
+        temperature=0.7
+    )
+
+    return response.choices[0].message.content
+
+# -------------------------
 # Routes
 # -------------------------
+
 @app.route("/")
 def home():
     return render_template("home.html")
@@ -118,6 +155,19 @@ def daily_page():
 def daily():
     data = request.json
     reply = daily_horoscope_ai(data["sign"])
+    return jsonify({"reply": reply})
+
+@app.route("/love-compatibility")
+def love_page():
+    return render_template("love.html")
+
+@app.route("/love", methods=["POST"])
+def love():
+    data = request.json
+    reply = love_compatibility_ai(
+        data["boy_dob"],
+        data["girl_dob"]
+    )
     return jsonify({"reply": reply})
 
 # -------------------------
