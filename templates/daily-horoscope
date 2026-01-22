@@ -4,6 +4,7 @@
     <title>Daily Horoscope | AstroRashi</title>
     <style>
         body {
+            /* Daily Horoscope page */
             background: #0c1022;
             color: white;
             font-family: Arial;
