@@ -150,10 +150,45 @@ def lucky():
 def tarot():
     return render_template("tarot.html")
 
-# ⭐ Jyotish Special (NEW SECTION)
+# ⭐ Jyotish Special (MAIN PAGE)
 @app.route("/jyotish-special")
 def jyotish_special():
     return render_template("jyotish_special.html")
+
+# -------------------------------
+# ⭐ Jyotish Special Sub-Tools
+# -------------------------------
+@app.route("/moon-sign")
+def moon_sign():
+    return render_template("moon_sign.html")
+
+@app.route("/numerology")
+def numerology():
+    return render_template("numerology.html")
+
+@app.route("/career")
+def career():
+    return render_template("career.html")
+
+@app.route("/marriage")
+def marriage():
+    return render_template("marriage.html")
+
+@app.route("/health")
+def health():
+    return render_template("health.html")
+
+@app.route("/yearly")
+def yearly():
+    return render_template("yearly.html")
+
+@app.route("/gemstone")
+def gemstone():
+    return render_template("gemstone.html")
+
+@app.route("/muhurat")
+def muhurat():
+    return render_template("muhurat.html")
 
 # -------------------------------
 # SEO FILES
