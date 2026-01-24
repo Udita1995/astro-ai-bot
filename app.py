@@ -1,7 +1,3 @@
-# ===============================
-# AstroRashi - app.py (FINAL)
-# ===============================
-
 from flask import Flask, render_template, request, jsonify, send_from_directory
 from openai import OpenAI
 from dotenv import load_dotenv
@@ -12,186 +8,170 @@ import os
 # Load Environment Variables
 # -------------------------------
 load_dotenv()
-
 app = Flask(__name__)
-
-# OpenAI Client
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 # -------------------------------
-# Helper: Zodiac Sign Calculator
+# Zodiac Calculator
 # -------------------------------
 def get_zodiac_sign(dob):
     date = datetime.strptime(dob, "%Y-%m-%d")
-    day = date.day
-    month = date.month
-
+    d, m = date.day, date.month
     zodiac = [
-        ("Capricorn", 1, 20), ("Aquarius", 2, 19), ("Pisces", 3, 20),
-        ("Aries", 4, 20), ("Taurus", 5, 21), ("Gemini", 6, 21),
-        ("Cancer", 7, 22), ("Leo", 8, 23), ("Virgo", 9, 23),
-        ("Libra", 10, 23), ("Scorpio", 11, 22), ("Sagittarius", 12, 22),
-        ("Capricorn", 12, 31)
+        ("Capricorn",1,20),("Aquarius",2,19),("Pisces",3,20),
+        ("Aries",4,20),("Taurus",5,21),("Gemini",6,21),
+        ("Cancer",7,22),("Leo",8,23),("Virgo",9,23),
+        ("Libra",10,23),("Scorpio",11,22),("Sagittarius",12,22),
+        ("Capricorn",12,31)
     ]
-
-    for sign, m, d in zodiac:
-        if month == m and day <= d:
-            return sign
+    for s, mo, da in zodiac:
+        if m == mo and d <= da:
+            return s
     return "Capricorn"
 
 # -------------------------------
-# Ask Astrology AI
+# Universal Jyotish AI
 # -------------------------------
-def astrology_ai(dob, time, place, question):
-    zodiac = get_zodiac_sign(dob)
-
+def jyotish_ai(topic, details):
     prompt = f"""
-You are a professional Vedic astrologer.
-Your name is Cosmic Guide.
+You are a senior Vedic astrologer.
 Do NOT mention AI or technology.
 
-Birth Details:
-Date: {dob}
-Time: {time}
-Place: {place}
-Zodiac Sign: {zodiac}
+Topic: {topic}
+Details:
+{details}
 
-User Question:
-{question}
-
-Give a calm, realistic astrology-based answer.
+Give clear, practical astrology guidance.
 """
-
     response = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
-            {"role": "system", "content": "You are an expert astrologer."},
+            {"role": "system", "content": "You are a master Jyotish astrologer."},
             {"role": "user", "content": prompt}
         ],
         temperature=0.7
     )
-
     return response.choices[0].message.content
 
 # -------------------------------
-# Daily Horoscope AI
+# BASIC PAGES
 # -------------------------------
-def daily_horoscope_ai(sign):
-    prompt = f"""
-You are a professional astrologer.
-Give today's horoscope for {sign}.
-Do NOT mention AI or technology.
-Keep it positive and realistic.
-"""
-
-    response = client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[
-            {"role": "system", "content": "You are an expert astrologer."},
-            {"role": "user", "content": prompt}
-        ],
-        temperature=0.7
-    )
-
-    return response.choices[0].message.content
-
-# -------------------------------
-# ROUTES
-# -------------------------------
-
-# Home Page
 @app.route("/")
-def home():
-    return render_template("home.html")
+def home(): return render_template("home.html")
 
-# Ask Astrology
-@app.route("/chat", methods=["GET", "POST"])
+@app.route("/chat", methods=["GET","POST"])
 def chat():
     if request.method == "GET":
         return render_template("index.html")
+    d = request.json
+    z = get_zodiac_sign(d["dob"])
+    return jsonify({"reply": jyotish_ai("General Astrology Question",
+        f"DOB:{d['dob']} Time:{d['time']} Place:{d['place']} Zodiac:{z} Question:{d['question']}")})
 
-    data = request.json
-    reply = astrology_ai(
-        data["dob"],
-        data["time"],
-        data["place"],
-        data["question"]
-    )
-    return jsonify({"reply": reply})
-
-# Daily Horoscope
 @app.route("/daily-horoscope")
-def daily_page():
-    return render_template("daily.html")
+def daily_page(): return render_template("daily.html")
 
 @app.route("/daily", methods=["POST"])
 def daily():
-    data = request.json
-    reply = daily_horoscope_ai(data["sign"])
-    return jsonify({"reply": reply})
+    d = request.json
+    return jsonify({"reply": jyotish_ai("Daily Horoscope", f"Zodiac:{d['sign']}")})
 
-# Love Compatibility
 @app.route("/love")
-def love():
-    return render_template("love.html")
+def love(): return render_template("love.html")
 
-# Kundli
 @app.route("/kundli")
-def kundli():
-    return render_template("kundli.html")
+def kundli(): return render_template("kundli.html")
 
-# Lucky Color / Number
 @app.route("/lucky")
-def lucky():
-    return render_template("lucky.html")
+def lucky(): return render_template("lucky.html")
 
-# Tarot Reading
 @app.route("/tarot")
-def tarot():
-    return render_template("tarot.html")
+def tarot(): return render_template("tarot.html")
 
-# ⭐ Jyotish Special (MAIN PAGE)
+# -------------------------------
+# JYOTISH SPECIAL
+# -------------------------------
 @app.route("/jyotish-special")
 def jyotish_special():
     return render_template("jyotish_special.html")
 
-# -------------------------------
-# ⭐ Jyotish Special Sub-Tools
-# -------------------------------
 @app.route("/moon-sign")
-def moon_sign():
-    return render_template("moon_sign.html")
+def moon_sign(): return render_template("moon_sign.html")
 
 @app.route("/numerology")
-def numerology():
-    return render_template("numerology.html")
+def numerology(): return render_template("numerology.html")
 
 @app.route("/career")
-def career():
-    return render_template("career.html")
+def career(): return render_template("career.html")
 
 @app.route("/marriage")
-def marriage():
-    return render_template("marriage.html")
+def marriage(): return render_template("marriage.html")
 
 @app.route("/health")
-def health():
-    return render_template("health.html")
+def health(): return render_template("health.html")
 
 @app.route("/yearly")
-def yearly():
-    return render_template("yearly.html")
+def yearly(): return render_template("yearly.html")
 
 @app.route("/gemstone")
-def gemstone():
-    return render_template("gemstone.html")
+def gemstone(): return render_template("gemstone.html")
 
 @app.route("/muhurat")
-def muhurat():
-    return render_template("muhurat.html")
+def muhurat(): return render_template("muhurat.html")
 
 # -------------------------------
-# SEO FILES
+# JYOTISH AI ROUTES
+# -------------------------------
+@app.route("/moon-sign-ai", methods=["POST"])
+def moon_ai():
+    d = request.json
+    return jsonify({"reply": jyotish_ai("Moon Sign",
+        f"DOB:{d['dob']} Time:{d['time']} Place:{d['place']}")})
+
+@app.route("/numerology-ai", methods=["POST"])
+def numerology_ai():
+    d = request.json
+    return jsonify({"reply": jyotish_ai("Numerology",
+        f"Name:{d['name']} DOB:{d['dob']}")})
+
+@app.route("/career-ai", methods=["POST"])
+def career_ai():
+    d = request.json
+    return jsonify({"reply": jyotish_ai("Career Guidance",
+        f"Zodiac:{d['zodiac']}")})
+
+@app.route("/marriage-ai", methods=["POST"])
+def marriage_ai():
+    d = request.json
+    return jsonify({"reply": jyotish_ai("Marriage Timing",
+        f"DOB:{d['dob']}")})
+
+@app.route("/health-ai", methods=["POST"])
+def health_ai():
+    d = request.json
+    return jsonify({"reply": jyotish_ai("Health Astrology",
+        f"Zodiac:{d['zodiac']}")})
+
+@app.route("/yearly-ai", methods=["POST"])
+def yearly_ai():
+    d = request.json
+    return jsonify({"reply": jyotish_ai("Yearly Horoscope",
+        f"Zodiac:{d['zodiac']} Year:{d['year']}")})
+
+@app.route("/gemstone-ai", methods=["POST"])
+def gemstone_ai():
+    d = request.json
+    return jsonify({"reply": jyotish_ai("Gemstone Recommendation",
+        f"Zodiac:{d['zodiac']}")})
+
+@app.route("/muhurat-ai", methods=["POST"])
+def muhurat_ai():
+    d = request.json
+    return jsonify({"reply": jyotish_ai("Muhurat Finder",
+        f"Purpose:{d['purpose']} Date:{d['date']}")})
+
+# -------------------------------
+# SEO
 # -------------------------------
 @app.route("/robots.txt")
 def robots():
@@ -202,7 +182,7 @@ def sitemap():
     return send_from_directory(".", "sitemap.xml")
 
 # -------------------------------
-# RUN SERVER
+# RUN
 # -------------------------------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
