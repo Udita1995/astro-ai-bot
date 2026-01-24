@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>AstroRashi | AI Astrology Guidance</title>
+    <title>AstroRashi | Your Astrology Companion</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <style>
@@ -13,15 +13,12 @@
             overflow-x: hidden;
         }
 
-        /* ===== STAR BACKGROUND ===== */
+        /* Star background */
         .stars {
             position: fixed;
             width: 100%;
             height: 100%;
-            top: 0;
-            left: 0;
             z-index: 0;
-            overflow: hidden;
         }
 
         .star {
@@ -31,49 +28,30 @@
             background: white;
             border-radius: 50%;
             opacity: 0.8;
-            animation: floatStar linear infinite;
+            animation: fall linear infinite;
         }
 
-        @keyframes floatStar {
-            from {
-                transform: translateY(0);
-                opacity: 0.8;
-            }
-            to {
-                transform: translateY(-120vh);
-                opacity: 0;
-            }
+        @keyframes fall {
+            from { transform: translateY(0); }
+            to { transform: translateY(120vh); opacity: 0; }
         }
 
-        /* ===== MAIN LAYOUT ===== */
-        .page {
+        /* Main container */
+        .container {
             position: relative;
             z-index: 2;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        .container {
             max-width: 420px;
+            margin: 80px auto;
             padding: 28px;
-            background: rgba(27, 31, 59, 0.9);
-            border-radius: 14px;
+            background: rgba(27, 31, 59, 0.95);
+            border-radius: 16px;
             text-align: center;
-            box-shadow: 0 0 30px rgba(255, 215, 0, 0.15);
-            animation: fadeIn 1s ease-in-out;
+            animation: fadeIn 1.2s ease;
         }
 
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         h1 {
@@ -82,16 +60,12 @@
         }
 
         p {
-            color: #ccc;
             font-size: 14px;
-            margin-bottom: 25px;
+            color: #d6d6d6;
+            margin-bottom: 20px;
         }
 
-        a {
-            text-decoration: none;
-        }
-
-        button {
+        .btn {
             width: 100%;
             padding: 13px;
             margin-top: 12px;
@@ -101,12 +75,12 @@
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: 0.2s;
         }
 
-        button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 15px gold;
+        .btn:hover {
+            transform: scale(1.03);
+            opacity: 0.95;
         }
 
         footer {
@@ -119,40 +93,32 @@
 
 <body>
 
-<!-- 🌟 STAR BACKGROUND -->
+<!-- Star background -->
 <div class="stars" id="stars"></div>
 
-<!-- 🌌 MAIN CONTENT -->
-<div class="page">
-    <div class="container">
-        <h1>🔮 AstroRashi</h1>
-        <p>Your AI-powered astrology guide for clarity, calm & direction</p>
+<div class="container">
+    <h1>🔮 AstroRashi</h1>
+    <p>Your AI-powered guide for astrology, tarot & cosmic clarity</p>
 
-        <a href="/chat"><button>🔮 Ask Astrology</button></a>
-        <a href="/daily-horoscope"><button>🌞 Daily Horoscope</button></a>
-        <a href="/love-compatibility"><button>❤️ Love Compatibility</button></a>
-        <a href="/kundli"><button>🪐 Kundli / Birth Chart</button></a>
-        <a href="/lucky"><button>🍀 Lucky Color & Number</button></a>
+    <a href="/chat"><button class="btn">🔮 Ask Astrology</button></a>
+    <a href="/daily-horoscope"><button class="btn">🌞 Daily Horoscope</button></a>
+    <a href="/love-compatibility"><button class="btn">❤️ Love Compatibility</button></a>
+    <a href="/kundli"><button class="btn">🪐 Kundli / Birth Chart</button></a>
+    <a href="/lucky"><button class="btn">🍀 Lucky Color & Number</button></a>
+    <a href="/tarot"><button class="btn">🃏 Tarot Card Reading</button></a>
 
-        <footer>© 2026 AstroRashi</footer>
-    </div>
+    <footer>© 2026 AstroRashi</footer>
 </div>
 
-<!-- ⭐ STAR SCRIPT -->
 <script>
-    const starContainer = document.getElementById("stars");
-
-    for (let i = 0; i < 120; i++) {
-        const star = document.createElement("div");
-        star.classList.add("star");
-
-        star.style.left = Math.random() * 100 + "vw";
-        star.style.top = Math.random() * 100 + "vh";
-        star.style.animationDuration = 10 + Math.random() * 20 + "s";
-        star.style.opacity = Math.random();
-
-        starContainer.appendChild(star);
-    }
+for (let i = 0; i < 120; i++) {
+    const star = document.createElement("div");
+    star.className = "star";
+    star.style.left = Math.random() * 100 + "vw";
+    star.style.top = Math.random() * 100 + "vh";
+    star.style.animationDuration = 5 + Math.random() * 15 + "s";
+    document.getElementById("stars").appendChild(star);
+}
 </script>
 
 </body>
