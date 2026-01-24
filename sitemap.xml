@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <url>
+    <loc>https://astro-ai-bot.onrender.com/</loc>
+  </url>
+
+  <url>
+    <loc>https://astro-ai-bot.onrender.com/chat</loc>
+  </url>
+
+  <url>
+    <loc>https://astro-ai-bot.onrender.com/daily-horoscope</loc>
+  </url>
+
+  <url>
+    <loc>https://astro-ai-bot.onrender.com/love-compatibility</loc>
+  </url>
+
+  <url>
+    <loc>https://astro-ai-bot.onrender.com/kundli</loc>
+  </url>
+
+  <url>
+    <loc>https://astro-ai-bot.onrender.com/lucky</loc>
+  </url>
+
+  <url>
+    <loc>https://astro-ai-bot.onrender.com/tarot</loc>
+  </url>
+
+</urlset>
