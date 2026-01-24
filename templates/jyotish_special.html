@@ -1,80 +1,147 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Jyotish Special | AstroRashi</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<title>Jyotish Special | AstroRashi</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: linear-gradient(180deg, #0c1022, #020314);
-            color: white;
-            min-height: 100vh;
-        }
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: radial-gradient(circle at top, #111638, #050714);
+        color: white;
+        overflow-x: hidden;
+    }
 
-        .container {
-            max-width: 420px;
-            margin: 40px auto;
-            padding: 20px;
-            text-align: center;
-        }
+    /* Floating stars (NON-CLICK BLOCKING) */
+    .stars {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        pointer-events: none; /* 🔥 FIX */
+    }
 
-        h1 {
-            color: gold;
-            margin-bottom: 25px;
-        }
+    .star {
+        position: absolute;
+        width: 2px;
+        height: 2px;
+        background: white;
+        border-radius: 50%;
+        opacity: 0.7;
+        animation: fall linear infinite;
+    }
 
-        .btn {
-            width: 100%;
-            padding: 14px;
-            margin: 12px 0;
-            font-size: 16px;
-            font-weight: bold;
-            border: none;
-            border-radius: 10px;
-            background: gold;
-            color: #000;
-            cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
+    @keyframes fall {
+        from { transform: translateY(0); }
+        to { transform: translateY(120vh); opacity: 0; }
+    }
 
-        .btn:hover {
-            transform: scale(1.03);
-            box-shadow: 0 0 12px gold;
-        }
+    /* Main container */
+    .container {
+        position: relative;
+        z-index: 2;
+        max-width: 420px;
+        margin: 70px auto;
+        padding: 28px;
+        background: rgba(27, 31, 59, 0.95);
+        border-radius: 16px;
+        text-align: center;
+        animation: fadeIn 1s ease;
+    }
 
-        .back {
-            margin-top: 30px;
-            background: #2c2f55;
-            color: white;
-        }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
 
-        .back:hover {
-            box-shadow: 0 0 10px #888;
-        }
-    </style>
+    h1 {
+        color: gold;
+        margin-bottom: 20px;
+    }
+
+    .btn {
+        width: 100%;
+        padding: 14px;
+        margin-top: 12px;
+        border: none;
+        border-radius: 10px;
+        background: gold;
+        color: #000;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .btn:hover {
+        transform: scale(1.04);
+        opacity: 0.95;
+    }
+
+    .back {
+        background: #2f334d;
+        color: white;
+    }
+</style>
 </head>
 
 <body>
 
+<!-- Stars -->
+<div class="stars" id="stars"></div>
+
 <div class="container">
     <h1>🔯 Jyotish Special</h1>
 
-    <button class="btn">🌙 Moon Sign Calculator</button>
-    <button class="btn">🔢 Numerology (Name + DOB)</button>
-    <button class="btn">💼 Career Guidance</button>
-    <button class="btn">💍 Marriage Timing</button>
-    <button class="btn">❤️ Health Astrology</button>
-    <button class="btn">📆 Yearly Horoscope</button>
-    <button class="btn">💎 Gemstone Recommendation</button>
-    <button class="btn">🕉 Muhurat Finder</button>
+    <a href="/moon-sign" style="display:block;">
+        <button class="btn">🌙 Moon Sign Calculator</button>
+    </a>
 
-    <a href="/">
+    <a href="/numerology" style="display:block;">
+        <button class="btn">🔢 Numerology (Name + DOB)</button>
+    </a>
+
+    <a href="/career-guidance" style="display:block;">
+        <button class="btn">💼 Career Guidance</button>
+    </a>
+
+    <a href="/marriage-timing" style="display:block;">
+        <button class="btn">💍 Marriage Timing</button>
+    </a>
+
+    <a href="/health-astrology" style="display:block;">
+        <button class="btn">❤️ Health Astrology</button>
+    </a>
+
+    <a href="/yearly-horoscope" style="display:block;">
+        <button class="btn">📅 Yearly Horoscope</button>
+    </a>
+
+    <a href="/gemstone" style="display:block;">
+        <button class="btn">💎 Gemstone Recommendation</button>
+    </a>
+
+    <a href="/muhurat" style="display:block;">
+        <button class="btn">🕉️ Muhurat Finder</button>
+    </a>
+
+    <a href="/" style="display:block;">
         <button class="btn back">← Back to Home</button>
     </a>
 </div>
+
+<script>
+for (let i = 0; i < 120; i++) {
+    const star = document.createElement("div");
+    star.className = "star";
+    star.style.left = Math.random() * 100 + "vw";
+    star.style.top = Math.random() * 100 + "vh";
+    star.style.animationDuration = 6 + Math.random() * 12 + "s";
+    document.getElementById("stars").appendChild(star);
+}
+</script>
 
 </body>
 </html>
