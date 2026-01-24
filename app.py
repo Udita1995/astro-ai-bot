@@ -1,5 +1,5 @@
 # Force redeploy
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, send_from_directory
 from openai import OpenAI
 from dotenv import load_dotenv
 from datetime import datetime
@@ -270,3 +270,4 @@ def tarot_reading():
 # -------------------------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
+
