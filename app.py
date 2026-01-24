@@ -1,16 +1,15 @@
-# FORCE FULL REDEPLOY
+# Force redeploy
 from flask import Flask, render_template, request, jsonify
 from openai import OpenAI
 from dotenv import load_dotenv
 from datetime import datetime
 import os
 
-# Load environment variables
+# -------------------------
+# App Setup
+# -------------------------
 load_dotenv()
-
 app = Flask(__name__)
-
-# OpenAI client
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 # -------------------------
@@ -75,7 +74,7 @@ def daily_horoscope_ai(sign):
 You are a professional astrologer.
 Give today's horoscope for {sign}.
 Do NOT mention AI or technology.
-Keep it positive and realistic.
+Keep it positive, calm, and practical.
 """
 
     response = client.chat.completions.create(
@@ -92,32 +91,21 @@ Keep it positive and realistic.
 # -------------------------
 # Love Compatibility AI
 # -------------------------
-def love_compatibility_ai(boy_dob, girl_dob):
-    boy_sign = get_zodiac_sign(boy_dob)
-    girl_sign = get_zodiac_sign(girl_dob)
-
+def love_ai(boy, girl):
     prompt = f"""
-You are a professional astrologer.
-
-Analyze love compatibility using zodiac psychology.
-
-Boy Zodiac Sign: {boy_sign}
-Girl Zodiac Sign: {girl_sign}
-
-Explain:
-- Emotional compatibility
-- Love bond
-- Relationship stability
-- Long-term potential
-
+You are an expert love astrologer.
 Do NOT mention AI or technology.
-Keep tone warm and realistic.
+
+Boy Zodiac: {boy}
+Girl Zodiac: {girl}
+
+Give love compatibility analysis with advice.
 """
 
     response = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
-            {"role": "system", "content": "You are an expert astrologer."},
+            {"role": "system", "content": "You are a love astrologer."},
             {"role": "user", "content": prompt}
         ],
         temperature=0.7
@@ -126,37 +114,29 @@ Keep tone warm and realistic.
     return response.choices[0].message.content
 
 # -------------------------
-# Kundli / Birth Chart AI
+# Kundli AI
 # -------------------------
 def kundli_ai(dob, time, place):
-    zodiac = get_zodiac_sign(dob)
-
     prompt = f"""
 You are a professional Vedic astrologer.
-
-Create a Kundli-style birth chart analysis.
+Do NOT mention AI or technology.
 
 Birth Details:
 Date: {dob}
 Time: {time}
 Place: {place}
-Zodiac Sign: {zodiac}
 
-Explain clearly:
-- Personality traits
-- Career direction
-- Marriage & relationships
-- Health tendencies
-- Strengths and challenges
-
-Do NOT mention AI or technology.
-Give calm, realistic guidance.
+Generate a basic Kundli interpretation:
+- Personality
+- Career
+- Marriage
+- Strengths
 """
 
     response = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
-            {"role": "system", "content": "You are an expert Vedic astrologer."},
+            {"role": "system", "content": "You are a Vedic astrologer."},
             {"role": "user", "content": prompt}
         ],
         temperature=0.7
@@ -169,26 +149,52 @@ Give calm, realistic guidance.
 # -------------------------
 def lucky_ai(sign):
     prompt = f"""
-You are a professional astrologer.
-
-Give today's lucky color and lucky number for {sign}.
-
-Include:
-- Lucky color
-- Lucky number
-- Short astrology-based reason
-
+You are an astrologer.
 Do NOT mention AI or technology.
-Keep it positive and simple.
+
+For zodiac sign {sign}, give:
+- Lucky Color
+- Lucky Number
+- One line advice for today.
 """
 
     response = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
-            {"role": "system", "content": "You are an expert astrologer."},
+            {"role": "system", "content": "You are an astrologer."},
             {"role": "user", "content": prompt}
         ],
-        temperature=0.6
+        temperature=0.7
+    )
+
+    return response.choices[0].message.content
+
+# -------------------------
+# Tarot Card AI
+# -------------------------
+def tarot_ai(question, cards):
+    prompt = f"""
+You are a professional Tarot card reader.
+Do NOT mention AI or technology.
+
+User Question:
+{question}
+
+Number of cards drawn: {cards}
+
+Give Tarot reading with:
+- Card name(s)
+- Meaning
+- Advice
+"""
+
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "You are a tarot reader."},
+            {"role": "user", "content": prompt}
+        ],
+        temperature=0.7
     )
 
     return response.choices[0].message.content
@@ -196,7 +202,6 @@ Keep it positive and simple.
 # -------------------------
 # Routes
 # -------------------------
-
 @app.route("/")
 def home():
     return render_template("home.html")
@@ -222,8 +227,7 @@ def daily_page():
 @app.route("/daily", methods=["POST"])
 def daily():
     data = request.json
-    reply = daily_horoscope_ai(data["sign"])
-    return jsonify({"reply": reply})
+    return jsonify({"reply": daily_horoscope_ai(data["sign"])})
 
 @app.route("/love-compatibility")
 def love_page():
@@ -232,33 +236,34 @@ def love_page():
 @app.route("/love", methods=["POST"])
 def love():
     data = request.json
-    reply = love_compatibility_ai(
-        data["boy_dob"],
-        data["girl_dob"]
-    )
-    return jsonify({"reply": reply})
+    return jsonify({"reply": love_ai(data["boy"], data["girl"])})
 
-@app.route("/kundli", methods=["GET", "POST"])
+@app.route("/kundli")
+def kundli_page():
+    return render_template("kundli.html")
+
+@app.route("/kundli", methods=["POST"])
 def kundli():
-    if request.method == "GET":
-        return render_template("kundli.html")
-
     data = request.json
-    reply = kundli_ai(
-        data["dob"],
-        data["time"],
-        data["place"]
-    )
-    return jsonify({"reply": reply})
+    return jsonify({"reply": kundli_ai(data["dob"], data["time"], data["place"])})
 
-@app.route("/lucky", methods=["GET", "POST"])
+@app.route("/lucky")
+def lucky_page():
+    return render_template("lucky.html")
+
+@app.route("/lucky", methods=["POST"])
 def lucky():
-    if request.method == "GET":
-        return render_template("lucky.html")
-
     data = request.json
-    reply = lucky_ai(data["sign"])
-    return jsonify({"reply": reply})
+    return jsonify({"reply": lucky_ai(data["sign"])})
+
+@app.route("/tarot")
+def tarot_page():
+    return render_template("tarot.html")
+
+@app.route("/tarot-reading", methods=["POST"])
+def tarot_reading():
+    data = request.json
+    return jsonify({"reply": tarot_ai(data["question"], data["cards"])})
 
 # -------------------------
 # Run App
